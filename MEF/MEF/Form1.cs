@@ -66,6 +66,9 @@ namespace MEF
             mainMenu1.MenuItems.Add(mnuParo);
             mainMenu1.MenuItems.Add(mnuSalir);
 
+            timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            timer1.Interval = 10;
+
             Menu = mainMenu1;
 
             maquina.Inicializa(ref ListaObjetos, MiBateria);
@@ -85,11 +88,13 @@ namespace MEF
 
         private void mnuInicio_Click(object sender, System.EventArgs e)
         {
-            timer1.Enabled = true;
+            //timer1.Enabled = true;
+            timer1.Start();
         }
 
         private void mnuParo_Click(object sender, System.EventArgs e)
         {
+            //timer1.Stop();
             timer1.Enabled = false;
         }
 
