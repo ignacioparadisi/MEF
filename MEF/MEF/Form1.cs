@@ -10,13 +10,13 @@ namespace MEF
 
     public partial class Form1 : Form
     {
-        private MainMenu mainMenu1;
-        private MenuItem menuItem1;
-        private MenuItem mnuSalir;
-        private MenuItem menuItem3;
-        private MenuItem mnuInicio;
-        private MenuItem mnuParo;
-        private Timer timer1;
+        private MainMenu mainMenu1 = new MainMenu();
+        private MenuItem menuItem1 = new MenuItem();
+        private MenuItem mnuSalir = new MenuItem();
+        private MenuItem menuItem3 = new MenuItem();
+        private MenuItem mnuInicio = new MenuItem();
+        private MenuItem mnuParo = new MenuItem();
+        private Timer timer1 = new Timer();
 
         // Creamos un objeto para la maquina de estados finitos 
         private CMaquina maquina = new CMaquina();
@@ -55,9 +55,21 @@ namespace MEF
             MiBateria.y = random.Next(0, 479);
             MiBateria.activo = true;
 
+            mnuInicio.Text = "Inicio";
+            mnuInicio.Click += new System.EventHandler(this.mnuInicio_Click);
+            mnuParo.Text = "Paro";
+            mnuParo.Click += new System.EventHandler(this.mnuParo_Click);
+            mnuSalir.Text = "Salir";
+            mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
+
+            mainMenu1.MenuItems.Add(mnuInicio);
+            mainMenu1.MenuItems.Add(mnuParo);
+            mainMenu1.MenuItems.Add(mnuSalir);
+
+            Menu = mainMenu1;
+
             maquina.Inicializa(ref ListaObjetos, MiBateria);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
-
         }
 
         // static void Main()
@@ -96,7 +108,7 @@ namespace MEF
         private void Form1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
             // Creamos la fuente y la brocha para el texto 
-            Font fuente = new Font("Arial", 16);
+            Font fuente = new Font("Arial", 11);
             SolidBrush brocha = new SolidBrush(Color.Black);
 
             // Dibujamos el robot 
