@@ -1,25 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MEF
 {
-    // Estructura usada para los objetos y la bateria 
-    public struct S_objeto
-    {
-        public bool activo;    // Indica si el objeto es visible o no 
-        public int x, y;        // Coordenadas del objeto 
-    }
-
-
-    /// <summary> 
-    /// Esta clase representa a nuestra maquina de estados finitos. 
-    /// </summary> 
-    public class CMaquina
+    class Fantasma
     {
         // Enumeracion de los diferentes estados 
         public enum estados
         {
             BUSQUEDA,
-            NBUSQUEDA,
             IRBATERIA,
             RECARGAR,
             MUERTO,
@@ -28,13 +20,13 @@ namespace MEF
         };
 
         // Esta variable representa el estado actual de la maquina 
-        public int Estado;
+        private int Estado;
 
         // Estas variables son las coordenadas del robot 
         private int x, y;
 
         // Arreglo para guardar una copia de los objetos 
-        private S_objeto[] objetos = new S_objeto[10];
+        private CMaquina pacman = new CMaquina();
         private S_objeto bateria;
 
         // Variable del indice del objeto que buscamos 
@@ -59,25 +51,29 @@ namespace MEF
             get { return Estado; }
         }
 
-        public CMaquina()
+        public Fantasma()
         {
             // Este es el contructor de la clase 
 
             // Inicializamos las variables 
 
-            Estado = (int)estados.NBUSQUEDA;    // Colocamos el estado de inicio. 
-            x = 320;        // Coordenada X 
-            y = 240;        // Coordenada Y 
-            indice = -1;    // Empezamos como si no hubiera objeto a buscar 
+            Estado = (int)estados.BUSQUEDA;    // Colocamos el estado de inicio. 
+            Random random = new Random();
+
+            int nx = random.Next(0, 649);
+            int ny = random.Next(0, 479);
+            x = nx;        // Coordenada X 
+            y = ny;        // Coordenada Y 
+            indice = 0;    // Empezamos como si no hubiera objeto a buscar 
             energia = 800;
         }
 
-        public void Inicializa(ref S_objeto[] Pobjetos, S_objeto Pbateria)
+        public void Inicializa(ref CMaquina Pmaquina, S_objeto Pbateria)
         {
             // Colocamos una copia de los objetos y la bateria 
             // para poder trabajar internamente con la informacion 
 
-            objetos = Pobjetos;
+            pacman = Pmaquina;
             bateria = Pbateria;
 
         }
@@ -93,29 +89,17 @@ namespace MEF
                     Busqueda();
 
                     // Verificamos por transicion 
-                    if (x == objetos[indice].x && y == objetos[indice].y)
+                    if (x == pacman.CoordX && y == pacman.CoordY)
                     {
                         // Desactivamos el objeto encontrado 
-                        objetos[indice].activo = false;
+                        pacman.Estado = (int)CMaquina.estados.MUERTO;
 
                         // Cambiamos de estado 
-                        Estado = (int)estados.NBUSQUEDA;
+                        Estado = (int)estados.ALEATORIO;
 
                     }
                     else if (energia < 400) // Checamos condicion de transicion 
                         Estado = (int)estados.IRBATERIA;
-
-                    break;
-
-                case (int)estados.NBUSQUEDA:
-                    // Llevamos a cabo la accion del estado 
-                    NuevaBusqueda();
-
-                    // Verificamos por transicion 
-                    if (indice == -1)    // Si ya no hay objetos, entonces aleatorio 
-                        Estado = (int)estados.ALEATORIO;
-                    else
-                        Estado = (int)estados.BUSQUEDA;
 
                     break;
 
@@ -166,33 +150,19 @@ namespace MEF
             // En esta funcion colocamos la logica del estado Busqueda 
 
             // Nos dirigimos hacia el objeto actual 
-            if (x < objetos[indice].x)
+            if (x < pacman.CoordX)
                 x++;
-            else if (x > objetos[indice].x)
+            else if (x > pacman.CoordX)
                 x--;
 
-            if (y < objetos[indice].y)
+            if (y < pacman.CoordY)
                 y++;
-            else if (y > objetos[indice].y)
+            else if (y > pacman.CoordY) 
                 y--;
 
             // Disminuimos la energia 
             energia--;
 
-        }
-
-        public void NuevaBusqueda()
-        {
-            // En esta funcion colocamos la logica del estado Nueva Busqueda 
-            // Verificamos que haya otro objeto a buscar 
-            indice = -1;
-
-            // Recorremos el arreglo buscando algun objeto activo 
-            for (int n = 0; n < 10; n++)
-            {
-                if (objetos[n].activo == true)
-                    indice = n;
-            }
         }
 
         public void Aleatorio()

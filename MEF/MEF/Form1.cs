@@ -18,9 +18,13 @@ namespace MEF
         private MenuItem mnuInicio = new MenuItem();
         private MenuItem mnuParo = new MenuItem();
         private Timer timer1 = new Timer();
+        private Timer timer2 = new Timer();
 
         // Creamos un objeto para la maquina de estados finitos 
         private CMaquina maquina = new CMaquina();
+
+        private Fantasma[] fantasmas = new Fantasma[4];
+        public S_objeto bateria2;
 
         // Objetos necesarios 
         public S_objeto[] ListaObjetos = new S_objeto[10];
@@ -38,7 +42,7 @@ namespace MEF
             // Inicializamos los objetos 
             mnuInicio.Text = "Inicio";
             mnuInicio.Click += new System.EventHandler(this.mnuInicio_Click);
-            mnuParo.Text = "Paro";
+            mnuParo.Text = "Parar";
             mnuParo.Click += new System.EventHandler(this.mnuParo_Click);
             mnuSalir.Text = "Salir";
             mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
@@ -49,6 +53,9 @@ namespace MEF
 
             timer1.Tick += new System.EventHandler(this.timer1_Tick);
             timer1.Interval = 10;
+
+            timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            timer2.Interval = 15;
 
             Menu = mainMenu1;
 
@@ -66,12 +73,25 @@ namespace MEF
                 ListaObjetos[n].activo = true;
             }
 
-            // Colocamos la bateria 
-            MiBateria.x = random.Next(0, 639);
+            for (int n = 0; n < 4; n++)
+            {
+                fantasmas[n] = new Fantasma();
+            }
+
+                // Colocamos la bateria 
+                MiBateria.x = random.Next(0, 639);
             MiBateria.y = random.Next(0, 479);
             MiBateria.activo = true;
 
+            bateria2.x = random.Next(0, 639);
+            bateria2.y = random.Next(0, 479);
+            bateria2.activo = true;
+
             maquina.Inicializa(ref ListaObjetos, MiBateria);
+            for (int i = 0; i < 4; i ++)
+            {
+                fantasmas[i].Inicializa(ref maquina, bateria2);
+            }
 
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
         }
@@ -90,6 +110,7 @@ namespace MEF
         private void mnuInicio_Click(object sender, System.EventArgs e)
         {
             timer1.Enabled = true;
+            timer2.Enabled = true;
             //timer1.Start();
         }
 
@@ -97,6 +118,7 @@ namespace MEF
         {
             //timer1.Stop();
             timer1.Enabled = false;
+            timer2.Enabled = false;
         }
 
         private void timer1_Tick(object sender, System.EventArgs e)
@@ -106,6 +128,21 @@ namespace MEF
 
             // Actualizamos a la maquina 
             maquina.Control();
+
+            // Mandamos a redibujar la pantalla 
+            this.Invalidate();
+        }
+
+        private void timer2_Tick(object sender, System.EventArgs e)
+        {
+            // Esta funcion es el handler del timer 
+            // Aqui tendremos la logica para actualizar nuestra maquina de estados 
+
+            // Actualizamos a la maquina
+            for (int i = 0; i < 4; i++)
+            {
+                fantasmas[i].Control();
+            }
 
             // Mandamos a redibujar la pantalla 
             this.Invalidate();
@@ -145,11 +182,34 @@ namespace MEF
                 }
             }
 
+            for (int n = 0; n < 4; n++)
+            {
+                if (fantasmas[n].EstadoM == (int)Fantasma.estados.MUERTO)
+                {
+                    e.Graphics.DrawRectangle(Pens.Black, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
+                }
+                else
+                {
+                    Image image = Image.FromFile("../../images/pinky.png");
+                    e.Graphics.DrawImage(image, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
+                    //e.Graphics.DrawRectangle(Pens.Green, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
+                }
+            }
+
             // Dibujamos la bateria 
             e.Graphics.DrawRectangle(Pens.Red, MiBateria.x - 4, MiBateria.y - 4, 20, 20);
 
+            // Dibujamos la bateria 
+            e.Graphics.DrawRectangle(Pens.Blue, bateria2.x - 4, bateria2.y - 4, 20, 20);
+
             // Indicamos el estado en que se encuentra la maquina 
-            e.Graphics.DrawString("Estado -> " + maquina.EstadoM.ToString(), fuente, brocha, 10, 10);
+            e.Graphics.DrawString("Estado Pacman -> " + maquina.EstadoM.ToString(), fuente, brocha, 10, 10);
+            int estadoY = 25;
+            for (int i = 0; i < 4; i++)
+            {
+                e.Graphics.DrawString("Estado Fantasma " + i + " -> " + fantasmas[i].EstadoM.ToString(), fuente, brocha, 10, estadoY);
+                estadoY += 15;
+            }
 
         }
     }
