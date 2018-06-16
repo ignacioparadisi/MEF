@@ -75,7 +75,7 @@ namespace MEF
         public void Inicializa(ref S_objeto[] Pobjetos, S_objeto Pbateria)
         {
             // Colocamos una copia de los objetos y la bateria 
-            // para pode trabajar internamente con la informacion 
+            // para poder trabajar internamente con la informacion 
 
             objetos = Pobjetos;
             bateria = Pbateria;

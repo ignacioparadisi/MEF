@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
@@ -11,9 +12,9 @@ namespace MEF
     public partial class Form1 : Form
     {
         private MainMenu mainMenu1 = new MainMenu();
-        private MenuItem menuItem1 = new MenuItem();
+        //private MenuItem menuItem1 = new MenuItem();
         private MenuItem mnuSalir = new MenuItem();
-        private MenuItem menuItem3 = new MenuItem();
+        //private MenuItem menuItem3 = new MenuItem();
         private MenuItem mnuInicio = new MenuItem();
         private MenuItem mnuParo = new MenuItem();
         private Timer timer1 = new Timer();
@@ -35,6 +36,21 @@ namespace MEF
             // 
 
             // Inicializamos los objetos 
+            mnuInicio.Text = "Inicio";
+            mnuInicio.Click += new System.EventHandler(this.mnuInicio_Click);
+            mnuParo.Text = "Paro";
+            mnuParo.Click += new System.EventHandler(this.mnuParo_Click);
+            mnuSalir.Text = "Salir";
+            mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
+
+            mainMenu1.MenuItems.Add(mnuInicio);
+            mainMenu1.MenuItems.Add(mnuParo);
+            mainMenu1.MenuItems.Add(mnuSalir);
+
+            timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            timer1.Interval = 10;
+
+            Menu = mainMenu1;
 
             // Cremos un objeto para tener valores aleatorios 
             Random random = new Random();
@@ -55,23 +71,8 @@ namespace MEF
             MiBateria.y = random.Next(0, 479);
             MiBateria.activo = true;
 
-            mnuInicio.Text = "Inicio";
-            mnuInicio.Click += new System.EventHandler(this.mnuInicio_Click);
-            mnuParo.Text = "Paro";
-            mnuParo.Click += new System.EventHandler(this.mnuParo_Click);
-            mnuSalir.Text = "Salir";
-            mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
-
-            mainMenu1.MenuItems.Add(mnuInicio);
-            mainMenu1.MenuItems.Add(mnuParo);
-            mainMenu1.MenuItems.Add(mnuSalir);
-
-            timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            timer1.Interval = 10;
-
-            Menu = mainMenu1;
-
             maquina.Inicializa(ref ListaObjetos, MiBateria);
+
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
         }
 
@@ -88,8 +89,8 @@ namespace MEF
 
         private void mnuInicio_Click(object sender, System.EventArgs e)
         {
-            //timer1.Enabled = true;
-            timer1.Start();
+            timer1.Enabled = true;
+            //timer1.Start();
         }
 
         private void mnuParo_Click(object sender, System.EventArgs e)
@@ -110,25 +111,42 @@ namespace MEF
             this.Invalidate();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            PictureBox pb1 = new PictureBox();
+            pb1.ImageLocation = "./MEF/images/pacman.png";
+            pb1.SizeMode = PictureBoxSizeMode.AutoSize;
+        }
+
         private void Form1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
             // Creamos la fuente y la brocha para el texto 
             Font fuente = new Font("Arial", 11);
-            SolidBrush brocha = new SolidBrush(Color.Black);
+            SolidBrush brocha = new SolidBrush(Color.White);
 
             // Dibujamos el robot 
             if (maquina.EstadoM == (int)CMaquina.estados.MUERTO)
+            {
                 e.Graphics.DrawRectangle(Pens.Black, maquina.CoordX - 4, maquina.CoordY - 4, 20, 20);
+            }
             else
-                e.Graphics.DrawRectangle(Pens.Green, maquina.CoordX - 4, maquina.CoordY - 4, 20, 20);
+            {
+                Image image = Image.FromFile("../../images/pacman.png");
+                e.Graphics.DrawImage(image, maquina.CoordX - 4, maquina.CoordY - 4, 20, 20);
+            }
 
             // Dibujamos los objetos 
             for (int n = 0; n < 10; n++)
+            {
                 if (ListaObjetos[n].activo == true)
-                    e.Graphics.DrawRectangle(Pens.Indigo, ListaObjetos[n].x - 4, ListaObjetos[n].y - 4, 20, 20);
+                {
+                    e.Graphics.DrawEllipse(Pens.Purple, ListaObjetos[n].x, ListaObjetos[n].y, 10, 10);
+                    //e.Graphics.DrawRectangle(Pens.Indigo, ListaObjetos[n].x - 4, ListaObjetos[n].y - 4, 20, 20);
+                }
+            }
 
             // Dibujamos la bateria 
-            e.Graphics.DrawRectangle(Pens.IndianRed, MiBateria.x - 4, MiBateria.y - 4, 20, 20);
+            e.Graphics.DrawRectangle(Pens.Red, MiBateria.x - 4, MiBateria.y - 4, 20, 20);
 
             // Indicamos el estado en que se encuentra la maquina 
             e.Graphics.DrawString("Estado -> " + maquina.EstadoM.ToString(), fuente, brocha, 10, 10);
