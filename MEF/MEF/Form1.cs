@@ -204,7 +204,9 @@ namespace MEF
             {
                 if (ListaObjetos[n].activo == true)
                 {
-                    e.Graphics.DrawEllipse(Pens.Purple, ListaObjetos[n].x, ListaObjetos[n].y, 10, 10);
+                    //e.Graphics.DrawEllipse(Pens.YellowGreen, ListaObjetos[n].x, ListaObjetos[n].y, 10, 10);
+                    Brush brush = new SolidBrush(Color.GreenYellow);
+                    e.Graphics.FillEllipse(brush, ListaObjetos[n].x, ListaObjetos[n].y, 10, 10);
                     //e.Graphics.DrawRectangle(Pens.Indigo, ListaObjetos[n].x - 4, ListaObjetos[n].y - 4, 20, 20);
                 }
             }

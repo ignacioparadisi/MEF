@@ -107,7 +107,7 @@ namespace MEF
                         Estado = (int)estados.ALEATORIO;
 
                     }
-                    else if (energia < 500) // Checamos condicion de transicion 
+                    else if (energia < 350) // Checamos condicion de transicion 
                         Estado = (int)estados.IRBATERIA;
 
                     break;
