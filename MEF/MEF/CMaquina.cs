@@ -28,7 +28,7 @@ namespace MEF
         };
 
         // Esta variable representa el estado actual de la maquina 
-        public int Estado;
+        private int Estado;
 
         // Estas variables son las coordenadas del robot 
         private int x, y;
@@ -57,6 +57,11 @@ namespace MEF
         public int EstadoM
         {
             get { return Estado; }
+        }
+
+        public void setEstado(int estado)
+        {
+            Estado = estado;
         }
 
         public CMaquina()

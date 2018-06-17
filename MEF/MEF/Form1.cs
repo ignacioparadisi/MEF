@@ -12,7 +12,7 @@ namespace MEF
     public partial class Form1 : Form
     {
         private MainMenu mainMenu1 = new MainMenu();
-        //private MenuItem menuItem1 = new MenuItem();
+        private MenuItem menuReset = new MenuItem();
         private MenuItem mnuSalir = new MenuItem();
         //private MenuItem menuItem3 = new MenuItem();
         private MenuItem mnuInicio = new MenuItem();
@@ -27,7 +27,7 @@ namespace MEF
         public S_objeto bateria2;
 
         // Objetos necesarios 
-        public S_objeto[] ListaObjetos = new S_objeto[10];
+        public S_objeto[] ListaObjetos = new S_objeto[20];
         public S_objeto MiBateria;
 
         public Form1()
@@ -36,7 +36,7 @@ namespace MEF
             // Necesario para admitir el Diseñador de Windows Forms 
             // 
             InitializeComponent();
-
+            this.DoubleBuffered = true;
             // 
 
             // Inicializamos los objetos 
@@ -46,16 +46,19 @@ namespace MEF
             mnuParo.Click += new System.EventHandler(this.mnuParo_Click);
             mnuSalir.Text = "Salir";
             mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
+            menuReset.Text = "Reset";
+            menuReset.Click += new EventHandler(this.menuReset_Click);
 
             mainMenu1.MenuItems.Add(mnuInicio);
             mainMenu1.MenuItems.Add(mnuParo);
             mainMenu1.MenuItems.Add(mnuSalir);
+            mainMenu1.MenuItems.Add(menuReset);
 
             timer1.Tick += new System.EventHandler(this.timer1_Tick);
             timer1.Interval = 10;
 
             timer2.Tick += new System.EventHandler(this.timer2_Tick);
-            timer2.Interval = 15;
+            timer2.Interval = 50;
 
             Menu = mainMenu1;
 
@@ -63,7 +66,7 @@ namespace MEF
             Random random = new Random();
 
             // Recorremos todos los objetos 
-            for (int n = 0; n < 10; n++)
+            for (int n = 0; n < ListaObjetos.Length; n++)
             {
                 // Colocamos las coordenadas 
                 ListaObjetos[n].x = random.Next(0, 639);
@@ -76,6 +79,14 @@ namespace MEF
             for (int n = 0; n < 4; n++)
             {
                 fantasmas[n] = new Fantasma();
+
+                //Random random2 = new Random();
+                int nx = random.Next(0, 649);
+                int ny = random.Next(0, 479);
+                int energia = random.Next(700, 899);
+                fantasmas[n].setCoordX(nx);        // Coordenada X 
+                fantasmas[n].setCoordY(ny);        // Coordenada Y 
+                fantasmas[n].SetEnergia(energia);
             }
 
                 // Colocamos la bateria 
@@ -121,6 +132,11 @@ namespace MEF
             timer2.Enabled = false;
         }
 
+        private void menuReset_Click(object sender, EventArgs e)
+        {
+            
+        }
+
         private void timer1_Tick(object sender, System.EventArgs e)
         {
             // Esta funcion es el handler del timer 
@@ -148,13 +164,6 @@ namespace MEF
             this.Invalidate();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            PictureBox pb1 = new PictureBox();
-            pb1.ImageLocation = "./MEF/images/pacman.png";
-            pb1.SizeMode = PictureBoxSizeMode.AutoSize;
-        }
-
         private void Form1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
         {
             // Creamos la fuente y la brocha para el texto 
@@ -173,7 +182,7 @@ namespace MEF
             }
 
             // Dibujamos los objetos 
-            for (int n = 0; n < 10; n++)
+            for (int n = 0; n < ListaObjetos.Length; n++)
             {
                 if (ListaObjetos[n].activo == true)
                 {
@@ -181,6 +190,8 @@ namespace MEF
                     //e.Graphics.DrawRectangle(Pens.Indigo, ListaObjetos[n].x - 4, ListaObjetos[n].y - 4, 20, 20);
                 }
             }
+
+            string[] images = new string[] {"blinky", "inky", "sue", "pinky"};
 
             for (int n = 0; n < 4; n++)
             {
@@ -190,7 +201,7 @@ namespace MEF
                 }
                 else
                 {
-                    Image image = Image.FromFile("../../images/pinky.png");
+                    Image image = Image.FromFile("../../images/" + images[n] + ".png");
                     e.Graphics.DrawImage(image, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
                     //e.Graphics.DrawRectangle(Pens.Green, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
                 }

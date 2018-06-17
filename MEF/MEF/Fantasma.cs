@@ -46,9 +46,23 @@ namespace MEF
             get { return y; }
         }
 
+        public void setCoordX(int x) {
+            this.x = x;
+        }
+
+        public void setCoordY(int y)
+        {
+            this.y = y;
+        }
+
         public int EstadoM
         {
             get { return Estado; }
+        }
+
+        public void SetEnergia(int energia)
+        {
+            this.energia = energia;
         }
 
         public Fantasma()
@@ -58,14 +72,9 @@ namespace MEF
             // Inicializamos las variables 
 
             Estado = (int)estados.BUSQUEDA;    // Colocamos el estado de inicio. 
-            Random random = new Random();
-
-            int nx = random.Next(0, 649);
-            int ny = random.Next(0, 479);
-            x = nx;        // Coordenada X 
-            y = ny;        // Coordenada Y 
+           
             indice = 0;    // Empezamos como si no hubiera objeto a buscar 
-            energia = 800;
+            //energia = 800;
         }
 
         public void Inicializa(ref CMaquina Pmaquina, S_objeto Pbateria)
@@ -92,7 +101,7 @@ namespace MEF
                     if (x == pacman.CoordX && y == pacman.CoordY)
                     {
                         // Desactivamos el objeto encontrado 
-                        pacman.Estado = (int)CMaquina.estados.MUERTO;
+                        pacman.setEstado((int)CMaquina.estados.MUERTO);
 
                         // Cambiamos de estado 
                         Estado = (int)estados.ALEATORIO;
