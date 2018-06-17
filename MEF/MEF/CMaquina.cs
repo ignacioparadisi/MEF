@@ -193,7 +193,7 @@ namespace MEF
             indice = -1;
 
             // Recorremos el arreglo buscando algun objeto activo 
-            for (int n = 0; n < 10; n++)
+            for (int n = 0; n < objetos.Length; n++)
             {
                 if (objetos[n].activo == true)
                     indice = n;

@@ -20,6 +20,9 @@ namespace MEF
         private Timer timer1 = new Timer();
         private Timer timer2 = new Timer();
 
+        string pacmanImage = "pacman";
+        int timeCounter = 0;
+
         // Creamos un objeto para la maquina de estados finitos 
         private CMaquina maquina = new CMaquina();
 
@@ -83,7 +86,7 @@ namespace MEF
                 //Random random2 = new Random();
                 int nx = random.Next(0, 649);
                 int ny = random.Next(0, 479);
-                int energia = random.Next(700, 899);
+                int energia = random.Next(600, 799);
                 fantasmas[n].setCoordX(nx);        // Coordenada X 
                 fantasmas[n].setCoordY(ny);        // Coordenada Y 
                 fantasmas[n].SetEnergia(energia);
@@ -143,6 +146,21 @@ namespace MEF
             // Aqui tendremos la logica para actualizar nuestra maquina de estados 
 
             // Actualizamos a la maquina 
+
+            if ((timeCounter % 9) == 0)
+            {
+                if (pacmanImage == "pacman")
+                {
+                    pacmanImage = "pacman2";
+                }
+                else
+                {
+                    pacmanImage = "pacman";
+                }
+            }
+
+            timeCounter++;
+
             maquina.Control();
 
             // Mandamos a redibujar la pantalla 
@@ -177,7 +195,7 @@ namespace MEF
             }
             else
             {
-                Image image = Image.FromFile("../../images/pacman.png");
+                Image image = Image.FromFile("../../images/"+ pacmanImage + ".png");
                 e.Graphics.DrawImage(image, maquina.CoordX - 4, maquina.CoordY - 4, 20, 20);
             }
 
@@ -201,14 +219,16 @@ namespace MEF
                 }
                 else
                 {
-                    Image image = Image.FromFile("../../images/" + images[n] + ".png");
-                    e.Graphics.DrawImage(image, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
+                    Image ghostImage = Image.FromFile("../../images/" + images[n] + ".png");
+                    e.Graphics.DrawImage(ghostImage, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
                     //e.Graphics.DrawRectangle(Pens.Green, fantasmas[n].CoordX - 4, fantasmas[n].CoordY - 4, 20, 20);
                 }
             }
 
             // Dibujamos la bateria 
-            e.Graphics.DrawRectangle(Pens.Red, MiBateria.x - 4, MiBateria.y - 4, 20, 20);
+            Image lifeImage = Image.FromFile("../../images/life.png");
+            e.Graphics.DrawImage(lifeImage, MiBateria.x - 4, MiBateria.y - 4, 30, 30);
+            //e.Graphics.DrawRectangle(Pens.Red, MiBateria.x - 4, MiBateria.y - 4, 20, 20);
 
             // Dibujamos la bateria 
             e.Graphics.DrawRectangle(Pens.Blue, bateria2.x - 4, bateria2.y - 4, 20, 20);

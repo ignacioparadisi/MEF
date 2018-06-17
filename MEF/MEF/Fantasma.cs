@@ -107,7 +107,7 @@ namespace MEF
                         Estado = (int)estados.ALEATORIO;
 
                     }
-                    else if (energia < 400) // Checamos condicion de transicion 
+                    else if (energia < 500) // Checamos condicion de transicion 
                         Estado = (int)estados.IRBATERIA;
 
                     break;
@@ -203,7 +203,7 @@ namespace MEF
             else if (x > bateria.x)
                 x--;
 
-            if (y < bateria.y)
+            else if (y < bateria.y)
                 y++;
             else if (y > bateria.y)
                 y--;
@@ -216,7 +216,9 @@ namespace MEF
         public void Recargar()
         {
             // En esta funcion colocamos la logica del estado Recargar 
-            energia = 1000;
+            Random random = new Random();
+            int energia = random.Next(600, 799);
+            this.energia = energia;
 
         }
 
