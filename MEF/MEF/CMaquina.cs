@@ -31,11 +31,13 @@ namespace MEF
         private int Estado;
 
         // Estas variables son las coordenadas del robot 
-        private int x, y;
+        private int x, y, lastx, lasty;
 
         // Arreglo para guardar una copia de los objetos 
         private S_objeto[] objetos = new S_objeto[10];
         private S_objeto bateria;
+
+        private Fantasma[] fantasmas = new Fantasma[4];
 
         // Variable del indice del objeto que buscamos 
         private int indice;
@@ -73,17 +75,20 @@ namespace MEF
             Estado = (int)estados.NBUSQUEDA;    // Colocamos el estado de inicio. 
             x = 320;        // Coordenada X 
             y = 240;        // Coordenada Y 
+            lastx = x;
+            lasty = y;
             indice = -1;    // Empezamos como si no hubiera objeto a buscar 
             energia = 800;
         }
 
-        public void Inicializa(ref S_objeto[] Pobjetos, S_objeto Pbateria)
+        public void Inicializa(ref S_objeto[] Pobjetos, ref Fantasma[] fantasmas, S_objeto Pbateria)
         {
             // Colocamos una copia de los objetos y la bateria 
             // para poder trabajar internamente con la informacion 
 
             objetos = Pobjetos;
             bateria = Pbateria;
+            this.fantasmas = fantasmas;
 
         }
 
@@ -169,19 +174,86 @@ namespace MEF
         public void Busqueda()
         {
             // En esta funcion colocamos la logica del estado Busqueda 
+            bool moveX = false;
+            bool moveY = false;
+            int fantasmaXIndex = 0;
+            int fantasmaYIndex = 0;
+            for (int i = 0; i < fantasmas.Length; i++)
+            {
+                if ((fantasmas[i].CoordX == x) && ((fantasmas[fantasmaYIndex].CoordY - y == 1) || (fantasmas[fantasmaYIndex].CoordY - y == -1)))
+                {
+                    moveX = true;
+                    fantasmaXIndex = i;
+                }
+
+                if ((fantasmas[i].CoordY == y) && ((fantasmas[fantasmaXIndex].CoordX - x == 1) || (fantasmas[fantasmaXIndex].CoordX - x == -1)))
+                {
+                    moveY = true;
+                    fantasmaYIndex = i;
+                }
+            }
+
+            if (moveX)
+            {
+                if (lasty > y)
+                {
+                    y--;
+                } else
+                {
+                    y++;
+                }
+            } else if (moveY) {
+                if (lastx > x)
+                {
+                    x--;
+                }
+                else
+                {
+                    x++;
+                }
+            } else
+            {
+                if (x < objetos[indice].x)
+                {
+                    if (lastx != x)
+                    {
+                        lastx = x;
+                    }
+                    x++;
+                }
+                else if (x > objetos[indice].x)
+                {
+                    if (lastx != x)
+                    {
+                        lastx = x;
+                    }
+                    x--;
+                }
+
+                if (y < objetos[indice].y)
+                {
+                    if (lasty != y)
+                    {
+                        lasty = y;
+                    }
+                    y++;
+                }
+                else if (y > objetos[indice].y)
+                {
+                    if (lasty != y)
+                    {
+                        lasty = y;
+                    }
+                    y--;
+                }
+            }
 
             // Nos dirigimos hacia el objeto actual 
-            if (x < objetos[indice].x)
-                x++;
-            else if (x > objetos[indice].x)
-                x--;
-
-            if (y < objetos[indice].y)
-                y++;
-            else if (y > objetos[indice].y)
-                y--;
+            
 
             // Disminuimos la energia 
+            moveX = false;
+            moveY = false;
             energia--;
 
         }
@@ -224,16 +296,62 @@ namespace MEF
             // En esta funcion colocamos la logica del estado Ir Bateria 
 
             // Nos dirigimos hacia la bateria 
-            if (x < bateria.x)
-                x++;
-            else if (x > bateria.x)
-                x--;
+            bool moveX = false;
+            bool moveY = false;
+            int fantasmaXIndex = 0;
+            int fantasmaYIndex = 0;
+            for (int i = 0; i < fantasmas.Length; i++)
+            {
+                if ((fantasmas[i].CoordX == x) && ((fantasmas[fantasmaYIndex].CoordY - y == 1) || (fantasmas[fantasmaYIndex].CoordY - y == -1)))
+                {
+                    moveX = true;
+                    fantasmaXIndex = i;
+                }
 
-            if (y < bateria.y)
-                y++;
-            else if (y > bateria.y)
-                y--;
+                if ((fantasmas[i].CoordY == y) && ((fantasmas[fantasmaXIndex].CoordX - x == 1) || (fantasmas[fantasmaXIndex].CoordX - x == -1)))
+                {
+                    moveY = true;
+                    fantasmaYIndex = i;
+                }
+            }
 
+            if (moveX)
+            {
+                if (lasty > y)
+                {
+                    y--;
+                }
+                else
+                {
+                    y++;
+                }
+            }
+            else if (moveY)
+            {
+                if (lastx > x)
+                {
+                    x--;
+                }
+                else
+                {
+                    x++;
+                }
+            }
+            else
+            {
+                if (x < bateria.x)
+                    x++;
+                else if (x > bateria.x)
+                    x--;
+
+                if (y < bateria.y)
+                    y++;
+                else if (y > bateria.y)
+                    y--;
+            }
+
+            moveX = false;
+            moveY = false;
             // Disminuimos la energia 
             energia--;
 

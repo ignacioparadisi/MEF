@@ -101,7 +101,7 @@ namespace MEF
             bateria2.y = random.Next(0, 479);
             bateria2.activo = true;
 
-            maquina.Inicializa(ref ListaObjetos, MiBateria);
+            maquina.Inicializa(ref ListaObjetos, ref fantasmas, MiBateria);
             for (int i = 0; i < 4; i ++)
             {
                 fantasmas[i].Inicializa(ref maquina, bateria2);

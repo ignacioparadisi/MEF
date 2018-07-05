@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MEF
 {
-    class Fantasma
+    public class Fantasma
     {
         // Enumeracion de los diferentes estados 
         public enum estados
@@ -24,6 +24,7 @@ namespace MEF
 
         // Estas variables son las coordenadas del robot 
         private int x, y;
+        private int lastx = 0, lasty = 0;
 
         // Arreglo para guardar una copia de los objetos 
         private CMaquina pacman = new CMaquina();
@@ -44,6 +45,16 @@ namespace MEF
         public int CoordY
         {
             get { return y; }
+        }
+
+        public int getLastX
+        {
+            get { return lastx; }
+        }
+
+        public int getLastY
+        {
+            get { return lasty; }
         }
 
         public void setCoordX(int x) {
@@ -160,14 +171,38 @@ namespace MEF
 
             // Nos dirigimos hacia el objeto actual 
             if (x < pacman.CoordX)
+            {
+                if (lastx != x)
+                {
+                    lastx = x;
+                }
                 x++;
+            }
             else if (x > pacman.CoordX)
+            {
+                if (lastx != x)
+                {
+                    lastx = x;
+                }
                 x--;
+            }
 
             if (y < pacman.CoordY)
+            {
+                if (lasty != y)
+                {
+                    lastx = y;
+                }
                 y++;
-            else if (y > pacman.CoordY) 
+            }
+            else if (y > pacman.CoordY)
+            {
+                if (lasty != y)
+                {
+                    lastx = y;
+                }
                 y--;
+            }
 
             // Disminuimos la energia 
             energia--;
